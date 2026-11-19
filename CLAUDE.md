@@ -9,6 +9,13 @@
 - `docs/agent-workflow-diagram.md` — схема процесса
 - `docs/design-system.md` — дизайн-система (ведёт агент `designer`)
 
+## Референс
+Действующий сайт компании https://timelysoft.net/ — главный источник информации о компании (услуги, проекты, факты, контакты) и основа для структуры и вёрстки.
+Подробности: контент — `docs/site-structure.md`, раздел «Референс»; вёрстка — `docs/design-system.md`.
+- Факты берём, тексты переписываем — не копируем.
+- Устаревшие данные (версии технологий, «лет на рынке» и т. п.) подтверждаем у команды до публикации.
+- Правила проекта (mobile first, три языка, клиенты в кейсах не называются, доступность, минимум JS) важнее референса.
+
 ## Стек
 - Astro + TypeScript, статическая сборка (`output: 'static'`)
 - Контент — Markdown/MDX в `src/content/` (Astro Content Collections)
@@ -71,7 +78,7 @@
 1. `developer`: создать проект Astro + TypeScript + Tailwind, настроить i18n (en без префикса, ru, ky), коллекции из `docs/site-structure.md`, базовый layout, переключатель языка, страницу 404.
 2. `developer`: настроить `base` и `site` для GitHub Pages через переменные окружения (для prod будут другие значения).
 3. `developer`: добавить `.github/workflows/ci.yml` (сборка + тесты на каждый PR) и `deploy-dev.yml` (деплой на GitHub Pages после слияния в `development`).
-4. `designer`: заполнить `docs/design-system.md` и токены в Tailwind (нейтральная палитра, пока нет брендбука).
+4. `designer`: заполнить `docs/design-system.md` и токены в Tailwind (нейтральная палитра; фирменный цвет известен из референса, перевод токенов на него — плановый шаг, см. `docs/design-system.md`).
 5. `content`: заглушки для всех разделов на трёх языках.
 6. `tester`: Playwright с проверками из раздела «Технические требования» в `docs/site-structure.md`.
 7. `publisher`: ветка `feat/bootstrap`, PR.

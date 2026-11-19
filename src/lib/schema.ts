@@ -14,7 +14,7 @@ export function organizationSchema(site: URL | undefined): JsonLd {
     '@id': `${url}#organization`,
     name: siteConfig.name,
     url,
-    logo: absoluteUrl(withBase('/favicon.svg'), site),
+    logo: absoluteUrl(withBase('/logo-mark.svg'), site),
     email: siteConfig.email,
     ...(siteConfig.phone ? { telephone: siteConfig.phone } : {}),
     address: {

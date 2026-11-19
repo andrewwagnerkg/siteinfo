@@ -1,0 +1,134 @@
+---
+import Container from './Container.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import Logo from './Logo.astro';
+import { useTranslations, type Lang } from '../i18n';
+import { getMainNav } from '../lib/nav';
+import { href, stripLocale } from '../lib/paths';
+import { siteConfig } from '../config/site';
+
+/**
+ * Site header. Below the `xl` breakpoint (1280px; ru/ky labels are long) the menu collapses behind a burger
+ * button (tiny inline script, keyboard and screen reader friendly). Without JS
+ * the menu is simply shown expanded.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const items = await getMainNav(lang, t);
+const current = stripLocale(Astro.url.pathname);
+const isActive = (path: string) => current === `${path}/` || current.startsWith(`${path}/`);
+---
+
+<header class="border-b border-line bg-canvas">
+  <Container class="flex flex-wrap items-center justify-between gap-x-6 py-2 xl:py-3">
+    <a href={href(lang)} class="inline-flex min-h-touch items-center gap-2.5 text-h3 font-bold">
+      <Logo />
+      {siteConfig.name}
+    </a>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="group -mr-2 inline-flex min-h-touch min-w-touch items-center justify-center rounded-control text-fg transition-colors hover:bg-surface xl:hidden"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      data-label-open={t.nav.openMenu}
+      data-label-close={t.nav.closeMenu}
+    >
+      <span class="sr-only" data-menu-label>{t.nav.openMenu}</span>
+      <svg
+        aria-hidden="true"
+        class="group-aria-expanded:hidden"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M4 7h16M4 12h16M4 17h16"></path>
+      </svg>
+      <svg
+        aria-hidden="true"
+        class="hidden group-aria-expanded:block"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M6 6l12 12M18 6L6 18"></path>
+      </svg>
+    </button>
+
+    <div
+      id="site-menu"
+      class="hidden w-full border-t border-line pt-2 pb-4 xl:flex xl:w-auto xl:items-center xl:gap-4 xl:border-0 xl:p-0"
+    >
+      <nav aria-label={t.nav.mainLabel}>
+        <ul role="list" class="flex flex-col md:grid md:grid-cols-2 md:gap-x-8 xl:flex xl:flex-row xl:flex-wrap xl:gap-x-1">
+          {
+            items.map((item) => (
+              <li class="border-b border-line last:border-0 md:border-0">
+                <a
+                  href={href(lang, item.path)}
+                  aria-current={isActive(item.path) ? 'page' : undefined}
+                  class="flex min-h-12 items-center text-fg transition-colors hover:text-accent aria-[current=page]:font-semibold xl:min-h-touch xl:rounded-control xl:px-3 xl:text-small xl:font-medium xl:text-muted xl:hover:bg-surface xl:hover:text-fg xl:aria-[current=page]:text-fg"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <LanguageSwitcher lang={lang} class="mt-3 xl:mt-0 xl:border-l xl:border-line xl:pl-4" />
+    </div>
+  </Container>
+</header>
+
+<noscript>
+  <style>
+    @media (max-width: 79.99rem) {
+      #site-menu {
+        display: block;
+      }
+      #menu-toggle {
+        display: none;
+      }
+    }
+  </style>
+</noscript>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('site-menu');
+
+  if (toggle && menu) {
+    const label = toggle.querySelector<HTMLElement>('[data-menu-label]');
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      menu.classList.toggle('hidden', !open);
+      if (label) label.textContent = (open ? toggle.dataset.labelClose : toggle.dataset.labelOpen) ?? '';
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

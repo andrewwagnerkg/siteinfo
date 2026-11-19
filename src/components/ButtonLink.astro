@@ -1,0 +1,15 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+/** Link styled as a button. Variants: docs/design-system.md, "Кнопки". */
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { href, variant = 'primary', class: className, ...rest } = Astro.props;
+---
+
+<a href={href} class:list={['btn', variant === 'primary' ? 'btn-primary' : 'btn-secondary', className]} {...rest}>
+  <slot />
+</a>

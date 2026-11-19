@@ -16,7 +16,7 @@ flowchart LR
     C --> T[Тестировщик<br/>автотесты Playwright]:::agent
     T -. ошибки → исправить .-> P
     T -- тесты пройдены --> PR[Pull request<br/>одобряет любой<br/>другой участник]:::owner
-    PR --> M[Слияние в main<br/>автосборка dev]:::auto
+    PR --> M[Слияние в development<br/>автосборка dev]:::auto
     M --> DEV[GitHub Pages<br/>dev-стенд]:::site
     DEV -. следующий запрос .-> O
 

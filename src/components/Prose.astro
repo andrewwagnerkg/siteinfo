@@ -1,0 +1,12 @@
+---
+/** Wrapper for rendered Markdown. Typography: `.prose-content` in src/styles/global.css. */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['prose-content', className]}>
+  <slot />
+</div>

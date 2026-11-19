@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ButtonLink from '../../components/ButtonLink.astro';
+import Card from '../../components/Card.astro';
+import CardGrid from '../../components/CardGrid.astro';
+import Container from '../../components/Container.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import Section from '../../components/Section.astro';
+import { formatDate, langFromParam, langStaticPaths, useTranslations } from '../../i18n';
+import { byDateDesc, byOrder, entrySlug, getLocalized } from '../../lib/content';
+import { href } from '../../lib/paths';
+import { siteConfig } from '../../config/site';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = langFromParam(Astro.params.lang);
+const t = useTranslations(lang);
+
+const services = (await getLocalized('services', lang)).sort(byOrder).slice(0, 6);
+const projects = (await getLocalized('projects', lang)).sort(byOrder);
+const featured = (projects.some((p) => p.data.featured) ? projects.filter((p) => p.data.featured) : projects).slice(0, 3);
+const testimonial = projects.find((p) => p.data.quote)?.data.quote;
+const news = (await getLocalized('news', lang)).sort(byDateDesc).slice(0, 3);
+const openJobs = (await getLocalized('careers', lang)).filter((job) => job.data.open);
+---
+
+<BaseLayout lang={lang} title={siteConfig.name} description={t.meta.defaultDescription}>
+  <!-- 1. Hero -->
+  <section class="hero-glow border-b border-line">
+    <Container class="hero-enter py-section-lg">
+      <h1 class="max-w-heading text-display font-bold">{t.home.heroTitle}</h1>
+      <p class="mt-6 max-w-measure text-lead text-muted">{t.home.heroLead}</p>
+      <ButtonLink href={href(lang, 'contacts')} class="mt-10">{t.common.discussProject}</ButtonLink>
+    </Container>
+  </section>
+
+  <!-- 2. Services -->
+  {
+    services.length > 0 && (
+      <Section id="services" title={t.home.servicesTitle} moreHref={href(lang, 'services')} moreLabel={t.nav.services}>
+        <CardGrid>
+          {services.map((s) => (
+            <Card href={href(lang, `services/${entrySlug(s)}`)} title={s.data.title} text={s.data.summary} />
+          ))}
+        </CardGrid>
+      </Section>
+    )
+  }
+
+  <!-- 3. Featured projects -->
+  {
+    featured.length > 0 && (
+      <Section id="projects" title={t.home.projectsTitle} moreHref={href(lang, 'portfolio')} moreLabel={t.home.allProjects}>
+        <CardGrid>
+          {featured.map((p) => (
+            <ProjectCard project={p} lang={lang} />
+          ))}
+        </CardGrid>
+      </Section>
+    )
+  }
+
+  <!-- 4. Numbers -->
+  <Section id="stats" title={t.home.statsTitle} class="border-y border-line bg-surface">
+    <dl class="grid gap-grid md:grid-cols-3">
+      {
+        t.home.stats.map((stat) => (
+          <div class="flex min-w-0 flex-col border-t-2 border-fg pt-4">
+            <dt class="mt-2 text-muted">{stat.label}</dt>
+            <dd class="order-first text-metric font-bold">{stat.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <!-- 5. Process -->
+  <Section id="process" title={t.home.processTitle}>
+    <ol class="grid gap-grid md:grid-cols-2 xl:grid-cols-4">
+      {
+        t.home.process.map((step, i) => (
+          <li class="min-w-0 rounded-card border border-line bg-raised p-6">
+            <span class="font-mono text-small font-semibold text-accent" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3 class="mt-3 text-h3 font-semibold">{step.title}</h3>
+            <p class="mt-2 text-muted">{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- 6. Testimonial -->
+  {
+    testimonial && (
+      <Section id="testimonial" title={t.home.testimonialTitle}>
+        <figure class="max-w-measure border-l-4 border-fg pl-5 md:pl-8">
+          <blockquote class="text-quote font-medium">
+            <p>{testimonial.text}</p>
+          </blockquote>
+          <figcaption class="mt-4 text-muted">{testimonial.role}</figcaption>
+        </figure>
+      </Section>
+    )
+  }
+
+  <!-- 7. Latest news -->
+  {
+    news.length > 0 && (
+      <Section id="news" title={t.home.newsTitle} moreHref={href(lang, 'news')} moreLabel={t.home.allNews}>
+        <CardGrid>
+          {news.map((n) => (
+            <Card
+              href={href(lang, `news/${entrySlug(n)}`)}
+              title={n.data.title}
+              eyebrow={formatDate(n.data.date, lang)}
+              text={n.data.summary}
+            />
+          ))}
+        </CardGrid>
+      </Section>
+    )
+  }
+
+  <!-- 8. Hiring (only when there are open positions) -->
+  {
+    openJobs.length > 0 && (
+      <Section id="hiring" title={t.home.hiringTitle}>
+        <p class="max-w-measure text-lead text-muted">{t.home.hiringText}</p>
+        <ButtonLink href={href(lang, 'careers')} variant="secondary" class="mt-6">
+          {t.home.hiringCta}
+        </ButtonLink>
+      </Section>
+    )
+  }
+
+  <!-- 9. Final CTA -->
+  <CtaSection lang={lang} title={t.home.finalTitle} text={t.home.finalText} />
+</BaseLayout>

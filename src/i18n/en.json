@@ -1,0 +1,160 @@
+{
+  "_meta": {
+    "placeholder": true,
+    "needs_native_review": false
+  },
+  "lang": {
+    "name": "English",
+    "short": "EN",
+    "ogLocale": "en_US"
+  },
+  "meta": {
+    "siteName": "Company",
+    "defaultDescription": "Custom software development: web and mobile applications, cloud infrastructure and UI/UX design."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "news": "News",
+    "careers": "Careers",
+    "about": "About",
+    "contacts": "Contacts",
+    "mainLabel": "Main navigation",
+    "footerLabel": "Footer navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "currentLanguage": "Current language"
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "readMore": "Read more",
+    "discussProject": "Discuss a project",
+    "contactUs": "Contact us",
+    "allRightsReserved": "All rights reserved."
+  },
+  "home": {
+    "title": "Home",
+    "heroTitle": "We build custom web and mobile software for growing businesses",
+    "heroLead": "From the first prototype to stable operation: design, development, cloud infrastructure and support in one team.",
+    "servicesTitle": "Services",
+    "projectsTitle": "Featured projects",
+    "allProjects": "All projects",
+    "statsTitle": "In numbers",
+    "stats": [
+      {
+        "value": "0",
+        "label": "years on the market"
+      },
+      {
+        "value": "0",
+        "label": "projects delivered"
+      },
+      {
+        "value": "0",
+        "label": "specialists on the team"
+      }
+    ],
+    "processTitle": "How we work",
+    "process": [
+      {
+        "title": "Discovery",
+        "text": "We study your goals, users and constraints and agree on what to build first."
+      },
+      {
+        "title": "Estimate and plan",
+        "text": "Before development starts, you get a prototype, a timeline and a cost range."
+      },
+      {
+        "title": "Development",
+        "text": "We work in short iterations and regularly show you working results."
+      },
+      {
+        "title": "Launch and support",
+        "text": "We release the product, monitor the system and keep improving it after launch."
+      }
+    ],
+    "testimonialTitle": "What clients say",
+    "newsTitle": "Latest news",
+    "allNews": "All news",
+    "hiringTitle": "We are hiring",
+    "hiringText": "We are looking for developers and testers. Some positions allow remote work.",
+    "hiringCta": "Open positions",
+    "finalTitle": "Let's discuss your project",
+    "finalText": "Tell us about your task, and we will reply with questions and a first estimate."
+  },
+  "services": {
+    "title": "Services",
+    "description": "Web and mobile development, cloud infrastructure and design, for new products and for improving existing ones.",
+    "relatedProjects": "Related projects"
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "description": "Selected case studies: the task, what we did and the result in numbers. Client names are not disclosed.",
+    "filtersLabel": "Filter projects",
+    "filterIndustry": "Industry",
+    "filterService": "Service",
+    "filterAll": "All",
+    "noResults": "No projects match the selected filters.",
+    "industry": "Industry",
+    "companySize": "Company size",
+    "year": "Year",
+    "services": "Services",
+    "result": "Key result",
+    "quoteTitle": "Client feedback",
+    "ctaTitle": "Shall we discuss your project?",
+    "empty": "No projects yet."
+  },
+  "news": {
+    "title": "News",
+    "description": "Company news and articles about software development.",
+    "empty": "No news yet.",
+    "published": "Published",
+    "tags": "Tags"
+  },
+  "careers": {
+    "title": "Careers",
+    "description": "Open positions: level, stack, work format and how to apply.",
+    "empty": "There are no open positions right now.",
+    "level": "Level",
+    "location": "Location",
+    "remote": "Remote",
+    "employment": "Employment",
+    "stack": "Stack",
+    "apply": "How to apply",
+    "applyText": "Send your CV to",
+    "closed": "This position is closed.",
+    "employmentTypes": {
+      "full-time": "Full-time",
+      "part-time": "Part-time",
+      "contract": "Contract",
+      "internship": "Internship"
+    }
+  },
+  "about": {
+    "title": "About us",
+    "description": "Who we are, how we work and who is on the team.",
+    "lead": "Placeholder: a short story of the company: when it was founded, what it does and what it values.",
+    "teamTitle": "Team"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "description": "How to reach us: email and the request form.",
+    "lead": "Tell us about your project: what you want to build, and the deadline and budget if you know them. We will reply by email.",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "addressLabel": "Address",
+    "formTitle": "Send a request",
+    "formName": "Name",
+    "formEmail": "Email",
+    "formMessage": "Message",
+    "formSubmit": "Send",
+    "formUnavailable": "The form is not connected yet. Please write to us by email."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist or has been moved.",
+    "home": "Go to the home page"
+  }
+}

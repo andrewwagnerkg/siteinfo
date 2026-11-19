@@ -1,0 +1,95 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { DEFAULT_LANG, LANGS, useTranslations, type Lang } from '../i18n';
+import { absoluteUrl, translatePath, withBase } from '../lib/paths';
+import { organizationSchema } from '../lib/schema';
+import { siteConfig } from '../config/site';
+
+/**
+ * Base layout for every page: <head> with SEO (canonical, hreflang, Open Graph,
+ * Schema.org Organization), skip link, header, main and footer.
+ */
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string | undefined;
+  /** Absolute or root-relative URL of the Open Graph image (already including base). */
+  image?: string | undefined;
+  type?: 'website' | 'article';
+  /** Extra JSON-LD objects (Article, JobPosting...). */
+  jsonLd?: Record<string, unknown>[];
+  /** Set to false for pages that have no language versions (404). */
+  alternates?: boolean;
+  noindex?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  image,
+  type = 'website',
+  jsonLd = [],
+  alternates = true,
+  noindex = false,
+} = Astro.props;
+
+const t = useTranslations(lang);
+const site = Astro.site;
+const pathname = Astro.url.pathname;
+const metaDescription = description || t.meta.defaultDescription;
+const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+const canonical = absoluteUrl(pathname, site);
+const ogImage = absoluteUrl(image ?? withBase(siteConfig.ogImage), site);
+const otherLocales = LANGS.filter((l) => l !== lang).map((l) => useTranslations(l).lang.ogLocale);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+    <meta name="generator" content={Astro.generator} />
+
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {
+      alternates &&
+        LANGS.map((l) => <link rel="alternate" hreflang={l} href={absoluteUrl(translatePath(pathname, l), site)} />)
+    }
+    {alternates && <link rel="alternate" hreflang="x-default" href={absoluteUrl(translatePath(pathname, DEFAULT_LANG), site)} />}
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={t.lang.ogLocale} />
+    {otherLocales.map((l) => <meta property="og:locale:alternate" content={l} />)}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <JsonLd data={[organizationSchema(site), ...jsonLd]} />
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-dvh flex-col bg-canvas font-sans text-body text-fg antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:inline-flex focus:min-h-touch focus:items-center focus:rounded-control focus:bg-primary focus:px-4 focus:font-semibold focus:text-on-primary focus:shadow-raised"
+    >
+      {t.common.skipToContent}
+    </a>
+    <Header lang={lang} />
+    <main id="main" tabindex="-1" class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

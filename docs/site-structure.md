@@ -105,7 +105,7 @@
 - Lighthouse: производительность и доступность ≥ 90 на мобильных.
 - Уважение `prefers-reduced-motion`.
 - Контраст текста по WCAG AA, работа с клавиатуры.
-- `sitemap.xml`, `robots.txt`, `hreflang` для en/ru/ky, Open Graph-картинки.
+- `sitemap-index.xml` (карта сайта, создаёт `@astrojs/sitemap`), `robots.txt`, `hreflang` для en/ru/ky, Open Graph-картинки.
 - Разметка Schema.org: Organization, Article (новости), JobPosting (вакансии).
 - Все внутренние ссылки рабочие, у каждой страницы есть версии на всех трёх языках.
 

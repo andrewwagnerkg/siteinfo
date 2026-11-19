@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import Container from '../../components/Container.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { langFromParam, langStaticPaths, useTranslations } from '../../i18n';
+import { siteConfig } from '../../config/site';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = langFromParam(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={t.contacts.title} description={t.contacts.description}>
+  <PageHeader title={t.contacts.title} lead={t.contacts.lead} />
+  <Container class="grid gap-grid pb-section lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16">
+    <dl class="grid content-start gap-6">
+      <div>
+        <dt class="eyebrow">{t.contacts.emailLabel}</dt>
+        <dd><a href={`mailto:${siteConfig.email}`} class="link inline-flex min-h-touch items-center text-lead">{siteConfig.email}</a></dd>
+      </div>
+      {
+        siteConfig.phone && (
+          <div>
+            <dt class="eyebrow">{t.contacts.phoneLabel}</dt>
+            <dd>
+              <a href={`tel:${siteConfig.phone.replace(/\s+/g, '')}`} class="link inline-flex min-h-touch items-center text-lead">
+                {siteConfig.phone}
+              </a>
+            </dd>
+          </div>
+        )
+      }
+      <div>
+        <dt class="eyebrow">{t.contacts.addressLabel}</dt>
+        <dd class="mt-1 text-lead">{siteConfig.address.locality}</dd>
+      </div>
+    </dl>
+    <ContactForm lang={lang} />
+  </Container>
+</BaseLayout>

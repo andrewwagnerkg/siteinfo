@@ -1,0 +1,88 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import Prose from '../../../components/Prose.astro';
+import { useTranslations } from '../../../i18n';
+import { entryStaticPaths } from '../../../lib/content';
+import { absoluteUrl, href } from '../../../lib/paths';
+import { jobDescriptionHtml, jobPostingSchema } from '../../../lib/schema';
+
+export function getStaticPaths() {
+  return entryStaticPaths('careers');
+}
+
+type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
+
+const { entry, lang } = Astro.props;
+const t = useTranslations(lang);
+const { data } = entry;
+const { Content } = await render(entry);
+
+const isEmail = data.apply_contact.includes('@') && !data.apply_contact.startsWith('http');
+const applyHref = isEmail ? `mailto:${data.apply_contact}` : data.apply_contact;
+// Closed positions keep their page (links stay valid) but are not advertised to search engines.
+const jsonLd = data.open
+  ? [
+      jobPostingSchema(entry, {
+        url: absoluteUrl(Astro.url.pathname, Astro.site),
+        description: jobDescriptionHtml(entry.rendered?.html),
+        site: Astro.site,
+      }),
+    ]
+  : [];
+---
+
+<BaseLayout lang={lang} title={data.title} description={data.summary} jsonLd={jsonLd}>
+  <article>
+    <PageHeader title={data.title} lead={data.summary}>
+      <a slot="before" href={href(lang, 'careers')} class="link-quiet mb-4">
+        <span aria-hidden="true">&larr;</span> {t.nav.careers}
+      </a>
+      {!data.open && <p class="mt-5 inline-block rounded-control border border-line-strong px-3 py-1.5 font-semibold">{t.careers.closed}</p>}
+      <dl class="mt-10 grid gap-x-grid gap-y-6 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <dt class="eyebrow">{t.careers.level}</dt>
+          <dd class="mt-1">{data.level}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">{t.careers.location}</dt>
+          <dd class="mt-1">{data.remote ? `${data.location} · ${t.careers.remote}` : data.location}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">{t.careers.employment}</dt>
+          <dd class="mt-1">{t.careers.employmentTypes[data.employment]}</dd>
+        </div>
+        {
+          data.stack.length > 0 && (
+            <div>
+              <dt class="eyebrow">{t.careers.stack}</dt>
+              <dd class="mt-1">{data.stack.join(', ')}</dd>
+            </div>
+          )
+        }
+      </dl>
+    </PageHeader>
+    <Container class="pb-section">
+      <Prose>
+        <Content />
+      </Prose>
+      {
+        data.open && (
+          <section aria-labelledby="apply-title" class="mt-12 max-w-measure rounded-panel border border-line bg-surface p-6 sm:p-8">
+            <h2 id="apply-title" class="text-h2 font-bold">
+              {t.careers.apply}
+            </h2>
+            <p class="mt-2">
+              {t.careers.applyText}{' '}
+              <a href={applyHref} class="link">
+                {data.apply_contact}
+              </a>
+            </p>
+          </section>
+        )
+      }
+    </Container>
+  </article>
+</BaseLayout>

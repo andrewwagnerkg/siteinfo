@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Card from '../../../components/Card.astro';
+import CardGrid from '../../../components/CardGrid.astro';
+import Container from '../../../components/Container.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import { formatDate, langFromParam, langStaticPaths, useTranslations } from '../../../i18n';
+import { byDateDesc, entrySlug, getLocalized } from '../../../lib/content';
+import { href } from '../../../lib/paths';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = langFromParam(Astro.params.lang);
+const t = useTranslations(lang);
+const news = (await getLocalized('news', lang)).sort(byDateDesc);
+---
+
+<BaseLayout lang={lang} title={t.news.title} description={t.news.description}>
+  <PageHeader title={t.news.title} lead={t.news.description} />
+  <Container class="pb-section">
+    {
+      news.length === 0 ? (
+        <p>{t.news.empty}</p>
+      ) : (
+        <CardGrid>
+          {news.map((n) => (
+            <Card
+              href={href(lang, `news/${entrySlug(n)}`)}
+              title={n.data.title}
+              eyebrow={formatDate(n.data.date, lang)}
+              text={n.data.summary}
+              headingLevel="h2"
+            />
+          ))}
+        </CardGrid>
+      )
+    }
+  </Container>
+</BaseLayout>

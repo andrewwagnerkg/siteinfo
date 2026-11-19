@@ -1,0 +1,73 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Container from '../../../components/Container.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import Prose from '../../../components/Prose.astro';
+import { formatDate, useTranslations } from '../../../i18n';
+import { entryStaticPaths } from '../../../lib/content';
+import { absoluteUrl, href, withBase } from '../../../lib/paths';
+import { articleSchema } from '../../../lib/schema';
+import { siteConfig } from '../../../config/site';
+
+export function getStaticPaths() {
+  return entryStaticPaths('news');
+}
+
+type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
+
+const { entry, lang } = Astro.props;
+const t = useTranslations(lang);
+const { data } = entry;
+const { Content } = await render(entry);
+
+const ogImage = data.cover ? (await getImage({ src: data.cover, width: 1200, format: 'jpg' })).src : undefined;
+const jsonLd = articleSchema(entry, {
+  url: absoluteUrl(Astro.url.pathname, Astro.site),
+  image: absoluteUrl(ogImage ?? withBase(siteConfig.ogImage), Astro.site),
+  lang,
+  site: Astro.site,
+});
+---
+
+<BaseLayout lang={lang} title={data.title} description={data.summary} image={ogImage} type="article" jsonLd={[jsonLd]}>
+  <article>
+    <PageHeader title={data.title} lead={data.summary}>
+      <a slot="before" href={href(lang, 'news')} class="link-quiet mb-4">
+        <span aria-hidden="true">&larr;</span> {t.nav.news}
+      </a>
+      <p class="mt-6 text-small text-muted">
+        {t.news.published}: <time datetime={data.date.toISOString()}>{formatDate(data.date, lang)}</time>
+      </p>
+      {
+        data.tags.length > 0 && (
+          <ul role="list" aria-label={t.news.tags} class="mt-3 flex flex-wrap gap-2">
+            {data.tags.map((tag) => (
+              <li class="rounded-full border border-line bg-surface px-3 py-1 text-small">{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </PageHeader>
+    {
+      data.cover && (
+        <Container class="mb-10">
+          <Image
+            src={data.cover}
+            alt={data.cover_alt ?? ''}
+            widths={[360, 720, 1080, 1440]}
+            sizes="(min-width: 1280px) 1216px, 100vw"
+            class="w-full rounded-panel border border-line"
+            loading="eager"
+          />
+        </Container>
+      )
+    }
+    <Container class="pb-section">
+      <Prose>
+        <Content />
+      </Prose>
+    </Container>
+  </article>
+</BaseLayout>

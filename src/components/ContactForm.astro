@@ -1,0 +1,55 @@
+---
+import { useTranslations, type Lang } from '../i18n';
+import { siteConfig } from '../config/site';
+
+/**
+ * Contact request form. Posts to an external form service configured with the
+ * PUBLIC_FORM_ENDPOINT env variable (no own server). Until it is set, the form
+ * is rendered disabled with a note to use email instead.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const endpoint = siteConfig.formEndpoint;
+const disabled = !endpoint;
+const label = 'block text-small font-medium';
+const field = 'field mt-2';
+---
+
+<section aria-labelledby="contact-form-title" class="rounded-panel border border-line bg-surface p-5 sm:p-8">
+  <h2 id="contact-form-title" class="text-h2 font-bold">{t.contacts.formTitle}</h2>
+  {
+    disabled && (
+      <p class="mt-4 rounded-control border border-line bg-raised p-4 text-small text-muted" id="contact-form-note">
+        {t.contacts.formUnavailable}
+      </p>
+    )
+  }
+  <form method="post" action={endpoint || undefined} class="mt-6 grid gap-5" aria-describedby={disabled ? 'contact-form-note' : undefined}>
+    <fieldset disabled={disabled} class="grid min-w-0 gap-5">
+      <div class="grid gap-5 md:grid-cols-2">
+        <label class={label}>
+          <span>{t.contacts.formName}</span>
+          <input type="text" name="name" autocomplete="name" required class={field} />
+        </label>
+        <label class={label}>
+          <span>{t.contacts.formEmail}</span>
+          <input type="email" name="email" autocomplete="email" required class={field} />
+        </label>
+      </div>
+      <label class={label}>
+        <span>{t.contacts.formMessage}</span>
+        <textarea name="message" rows="5" required class={field}></textarea>
+      </label>
+      <input type="hidden" name="lang" value={lang} />
+      <div>
+        <button type="submit" class="btn btn-primary w-full sm:w-auto">
+          {t.contacts.formSubmit}
+        </button>
+      </div>
+    </fieldset>
+  </form>
+</section>

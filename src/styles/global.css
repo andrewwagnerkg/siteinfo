@@ -1,0 +1,657 @@
+/*
+ * Global styles and design tokens.
+ * Owned by the `designer` agent. Source of truth: docs/design-system.md.
+ *
+ * How tokens work:
+ * 1. Raw values live in CSS custom properties on :root (light) and are
+ *    overridden for dark mode in a prefers-color-scheme media query.
+ * 2. `@theme inline` maps them to Tailwind utilities (bg-canvas, text-fg,
+ *    text-h2, rounded-card, py-section...).
+ * 3. Tailwind's default palette, type scale, radii, shadows and container
+ *    sizes are reset on purpose: components may use only the tokens below.
+ *
+ * Rebranding = change the values in :root (and the dark block), nothing else.
+ */
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------------ */
+/* 1. Raw token values                                                       */
+/* ------------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Neutral palette (zinc-like), light theme */
+  --c-canvas: #ffffff;
+  --c-surface: #f4f4f5;
+  --c-raised: #ffffff;
+  --c-fg: #18181b;
+  --c-muted: #52525b;
+  --c-line: #e4e4e7;
+  --c-line-strong: #71717a;
+  --c-primary: #18181b;
+  --c-primary-hover: #3f3f46;
+  --c-on-primary: #ffffff;
+  --c-accent: #1d4ed8;
+  --c-accent-hover: #1e40af;
+  --c-focus: #2563eb;
+  --c-danger: #b91c1c;
+  --c-success: #15803d;
+  --c-glow: rgb(59 130 246 / 0.22);
+
+  --sh-card: 0 1px 2px rgb(24 24 27 / 0.05);
+  --sh-raised: 0 2px 4px rgb(24 24 27 / 0.04), 0 12px 32px -8px rgb(24 24 27 / 0.14);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-canvas: #0f0f12;
+    --c-surface: #18181b;
+    --c-raised: #1c1c20;
+    --c-fg: #f4f4f5;
+    --c-muted: #a1a1aa;
+    --c-line: #2e2e33;
+    --c-line-strong: #71717a;
+    --c-primary: #f4f4f5;
+    --c-primary-hover: #d4d4d8;
+    --c-on-primary: #18181b;
+    --c-accent: #60a5fa;
+    --c-accent-hover: #93c5fd;
+    --c-focus: #60a5fa;
+    --c-danger: #f87171;
+    --c-success: #4ade80;
+    --c-glow: rgb(59 130 246 / 0.16);
+
+    --sh-card: 0 1px 2px rgb(0 0 0 / 0.4);
+    --sh-raised: 0 2px 4px rgb(0 0 0 / 0.3), 0 12px 32px -8px rgb(0 0 0 / 0.6);
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/* 2. Tailwind theme (utilities)                                             */
+/* ------------------------------------------------------------------------ */
+
+@theme inline {
+  /* Colors: bg-*, text-*, border-*, outline-* */
+  --color-*: initial;
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-raised: var(--c-raised);
+  --color-fg: var(--c-fg);
+  --color-muted: var(--c-muted);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-primary: var(--c-primary);
+  --color-primary-hover: var(--c-primary-hover);
+  --color-on-primary: var(--c-on-primary);
+  --color-accent: var(--c-accent);
+  --color-accent-hover: var(--c-accent-hover);
+  --color-focus: var(--c-focus);
+  --color-danger: var(--c-danger);
+  --color-success: var(--c-success);
+  --color-glow: var(--c-glow);
+
+  /* Shadows: shadow-card, shadow-raised */
+  --shadow-*: initial;
+  --shadow-card: var(--sh-card);
+  --shadow-raised: var(--sh-raised);
+}
+
+@theme {
+  /* Fonts: system stacks with full Cyrillic support (ru, ky). No web fonts. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'Cascadia Code', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Fluid type scale: text-caption ... text-display */
+  --text-*: initial;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-body: clamp(1rem, 0.975rem + 0.125vw, 1.0625rem);
+  --text-body--line-height: 1.6;
+  --text-lead: clamp(1.125rem, 1.06rem + 0.32vw, 1.3125rem);
+  --text-lead--line-height: 1.55;
+  --text-h3: clamp(1.125rem, 1.08rem + 0.22vw, 1.25rem);
+  --text-h3--line-height: 1.35;
+  --text-quote: clamp(1.25rem, 1.11rem + 0.65vw, 1.75rem);
+  --text-quote--line-height: 1.45;
+  --text-h2: clamp(1.5rem, 1.29rem + 1.05vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.015em;
+  --text-metric: clamp(2rem, 1.79rem + 1.05vw, 2.75rem);
+  --text-metric--line-height: 1.1;
+  --text-metric--letter-spacing: -0.02em;
+  --text-h1: clamp(2rem, 1.58rem + 2.1vw, 3.5rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-display: clamp(2.25rem, 1.61rem + 3.2vw, 4.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
+
+  /* Spacing: base step 0.25rem (p-4 = 1rem) + fluid named steps */
+  --spacing: 0.25rem;
+  --spacing-touch: 2.75rem; /* 44px minimum touch target */
+  --spacing-gutter: clamp(1rem, 0.43rem + 2.86vw, 2.5rem);
+  --spacing-grid: clamp(1rem, 0.71rem + 1.43vw, 2rem);
+  --spacing-section: clamp(3rem, 1.86rem + 5.71vw, 6rem);
+  --spacing-section-lg: clamp(4rem, 2.1rem + 9.52vw, 9rem);
+
+  /* Max widths: max-w-page, max-w-measure, max-w-heading */
+  --container-*: initial;
+  --container-page: 80rem; /* 1280px content width */
+  --container-measure: 70ch; /* ~75 characters per line */
+  --container-heading: 24ch;
+
+  /* Radii: rounded-control, rounded-card, rounded-panel (+ rounded-full) */
+  --radius-*: initial;
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-panel: 1.25rem;
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Breakpoints: Tailwind defaults, listed for clarity */
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 96rem; /* 1536px */
+}
+
+/* ------------------------------------------------------------------------ */
+/* 3. Base                                                                   */
+/* ------------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 1rem;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Long ru/ky words must not break the layout. */
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  dt,
+  dd,
+  a,
+  label,
+  blockquote,
+  figcaption {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-focus) 28%, transparent);
+  }
+
+  /* Visible keyboard focus everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  main:focus {
+    outline: none;
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/* 4. Components                                                             */
+/* ------------------------------------------------------------------------ */
+
+@layer components {
+  /* Buttons ------------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    min-height: var(--spacing-touch);
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    padding: 0.625rem 1.25rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 150ms var(--ease-standard),
+      border-color 150ms var(--ease-standard),
+      color 150ms var(--ease-standard),
+      transform 150ms var(--ease-standard);
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled,
+  fieldset:disabled .btn {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-secondary {
+    border-color: var(--color-line-strong);
+    background-color: transparent;
+    color: var(--color-fg);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-fg);
+    background-color: var(--color-surface);
+  }
+
+  @media (min-width: 40rem) {
+    .btn {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  /* Text links ---------------------------------------------------------- */
+  .link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color 150ms var(--ease-standard);
+  }
+
+  .link:hover {
+    color: var(--color-accent-hover);
+    text-decoration-thickness: 2px;
+  }
+
+  /* Quiet navigation link ("← Services", "All projects"). */
+  .link-quiet {
+    display: inline-flex;
+    min-height: var(--spacing-touch);
+    min-width: var(--spacing-touch);
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-muted);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 150ms var(--ease-standard);
+  }
+
+  .link-quiet:hover {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* Small uppercase-free label above headings and in card headers. */
+  .eyebrow {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+    font-weight: 500;
+  }
+
+  /* Cards --------------------------------------------------------------- */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-raised);
+    box-shadow: var(--shadow-card);
+    padding: clamp(1.25rem, 1.07rem + 0.89vw, 1.75rem);
+    transition:
+      border-color 200ms var(--ease-standard),
+      box-shadow 200ms var(--ease-standard),
+      transform 200ms var(--ease-standard);
+  }
+
+  .card:hover {
+    border-color: var(--color-line-strong);
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-2px);
+  }
+
+  /* The title link stretches over the whole card: ring the card instead. */
+  .card:has(a:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .card a:focus-visible {
+    outline: none;
+  }
+
+  .card-arrow {
+    display: inline-block;
+    color: var(--color-accent);
+    transition: translate 200ms var(--ease-standard);
+  }
+
+  .card:hover .card-arrow {
+    translate: 0.25rem 0;
+  }
+
+  /* Form fields --------------------------------------------------------- */
+  .field {
+    display: block;
+    width: 100%;
+    min-height: var(--spacing-touch);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-control);
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    padding: 0.625rem 0.875rem;
+    font: inherit;
+    transition: border-color 150ms var(--ease-standard);
+  }
+
+  .field:hover {
+    border-color: var(--color-fg);
+  }
+
+  .field:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 1px;
+    border-color: var(--color-focus);
+  }
+
+  .field:user-invalid {
+    border-color: var(--color-danger);
+  }
+
+  .field:disabled {
+    cursor: not-allowed;
+    background-color: var(--color-surface);
+    color: var(--color-muted);
+  }
+
+  textarea.field {
+    min-height: 8rem;
+    resize: vertical;
+  }
+
+  /* Prose: rendered Markdown -------------------------------------------- */
+  .prose-content {
+    max-width: var(--container-measure);
+    color: var(--color-fg);
+  }
+
+  .prose-content > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose-content h2 {
+    margin-top: 2em;
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+    font-weight: 700;
+  }
+
+  .prose-content h3 {
+    margin-top: 1.75em;
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: 600;
+  }
+
+  .prose-content h2 + *,
+  .prose-content h3 + * {
+    margin-top: 0.75em;
+  }
+
+  .prose-content > :first-child {
+    margin-top: 0;
+  }
+
+  .prose-content a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .prose-content a:hover {
+    color: var(--color-accent-hover);
+    text-decoration-thickness: 2px;
+  }
+
+  .prose-content ul,
+  .prose-content ol {
+    padding-left: 1.5em;
+  }
+
+  .prose-content ul {
+    list-style: disc;
+  }
+
+  .prose-content ol {
+    list-style: decimal;
+  }
+
+  .prose-content li + li {
+    margin-top: 0.5em;
+  }
+
+  .prose-content li::marker {
+    color: var(--color-muted);
+  }
+
+  .prose-content strong {
+    font-weight: 600;
+  }
+
+  .prose-content blockquote {
+    border-left: 3px solid var(--color-line-strong);
+    padding-left: 1.25em;
+    color: var(--color-muted);
+    font-style: italic;
+  }
+
+  .prose-content hr {
+    border-color: var(--color-line);
+    margin-block: 2.5em;
+  }
+
+  .prose-content img {
+    border-radius: var(--radius-card);
+  }
+
+  .prose-content code {
+    border-radius: 0.25rem;
+    background-color: var(--color-surface);
+    padding: 0.125em 0.375em;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .prose-content pre {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    padding: 1rem 1.25rem;
+    font-size: var(--text-small);
+    line-height: 1.6;
+  }
+
+  .prose-content pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .prose-content table {
+    border-collapse: collapse;
+    font-size: var(--text-small);
+  }
+
+  .prose-content th,
+  .prose-content td {
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.625rem 1rem 0.625rem 0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose-content th {
+    font-weight: 600;
+  }
+
+  /* Wide blocks from Markdown scroll inside themselves on small screens. */
+  .prose-content table,
+  .prose-content pre {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Hero glow: the single light effect of the site. Hero only. ---------- */
+  .hero-glow {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .hero-glow::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: -30%;
+    right: -25%;
+    width: min(64rem, 140vw);
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, var(--color-glow), transparent);
+    pointer-events: none;
+  }
+
+  @media (min-width: 64rem) {
+    .hero-glow::before {
+      top: -45%;
+      right: -10%;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/* 5. Motion (CSS only). Everything here is skipped with reduced motion.     */
+/* ------------------------------------------------------------------------ */
+
+@keyframes rise-in {
+  from {
+    translate: 0 0.75rem;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes glow-in {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    translate: 0 2rem;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-enter {
+    animation: rise-in 600ms var(--ease-standard) both;
+  }
+
+  .hero-glow::before {
+    animation: glow-in 1200ms var(--ease-standard) both;
+  }
+
+  /* Section reveal on scroll. Browsers without scroll-driven animations
+     simply show the section as is. Only transform is animated, so text
+     contrast is never reduced. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card:hover,
+  .btn:active {
+    transform: none;
+  }
+}

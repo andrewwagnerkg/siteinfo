@@ -1,0 +1,27 @@
+---
+/**
+ * Generic card for services, news, careers and projects.
+ * Must be placed inside <CardGrid>. The whole card is clickable via the title link.
+ */
+interface Props {
+  href: string;
+  title: string;
+  eyebrow?: string | undefined;
+  text?: string | undefined;
+  headingLevel?: 'h2' | 'h3';
+  attrs?: Record<string, string>;
+}
+
+const { href, title, eyebrow, text, headingLevel: Heading = 'h3', attrs = {} } = Astro.props;
+---
+
+<li class="card" {...attrs}>
+  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
+  <slot name="top" />
+  <Heading class="text-h3 font-semibold">
+    <a href={href} class="after:absolute after:inset-0">{title}</a>
+  </Heading>
+  {text && <p class="mt-2 text-muted">{text}</p>}
+  <slot />
+  <span aria-hidden="true" class="mt-auto pt-6"><span class="card-arrow">&rarr;</span></span>
+</li>

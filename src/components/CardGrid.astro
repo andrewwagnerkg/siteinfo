@@ -1,0 +1,12 @@
+---
+/** Responsive grid for cards: 1 column -> 2 (md) -> 3 (lg). */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<ul role="list" class:list={['grid gap-grid md:grid-cols-2 lg:grid-cols-3', className]}>
+  <slot />
+</ul>

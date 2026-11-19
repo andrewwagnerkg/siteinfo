@@ -1,0 +1,35 @@
+---
+/**
+ * Single 404 page (static hosting serves one 404.html). The visitor's language
+ * is unknown, so the message is shown in all languages.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import { DEFAULT_LANG, LANGS, useTranslations } from '../i18n';
+import { href } from '../lib/paths';
+
+const t = useTranslations(DEFAULT_LANG);
+---
+
+<BaseLayout lang={DEFAULT_LANG} title={t.notFound.title} alternates={false} noindex>
+  <Container class="py-section-lg">
+    <p class="text-display font-bold text-muted" aria-hidden="true">404</p>
+    <div class="mt-10 grid gap-grid md:grid-cols-3">
+      {
+        LANGS.map((lang, i) => {
+          const dict = useTranslations(lang);
+          const Heading = i === 0 ? 'h1' : 'h2';
+          return (
+            <section lang={lang} class="min-w-0 border-t border-line pt-6">
+              <Heading class="text-h3 font-bold">{dict.notFound.title}</Heading>
+              <p class="mt-2 text-muted">{dict.notFound.text}</p>
+              <a href={href(lang)} class="link mt-2 inline-flex min-h-touch items-center font-medium">
+                {dict.notFound.home}
+              </a>
+            </section>
+          );
+        })
+      }
+    </div>
+  </Container>
+</BaseLayout>

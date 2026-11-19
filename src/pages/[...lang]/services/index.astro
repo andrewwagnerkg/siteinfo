@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Card from '../../../components/Card.astro';
+import CardGrid from '../../../components/CardGrid.astro';
+import Container from '../../../components/Container.astro';
+import CtaSection from '../../../components/CtaSection.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import { langFromParam, langStaticPaths, useTranslations } from '../../../i18n';
+import { byOrder, entrySlug, getLocalized } from '../../../lib/content';
+import { href } from '../../../lib/paths';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = langFromParam(Astro.params.lang);
+const t = useTranslations(lang);
+const services = (await getLocalized('services', lang)).sort(byOrder);
+---
+
+<BaseLayout lang={lang} title={t.services.title} description={t.services.description}>
+  <PageHeader title={t.services.title} lead={t.services.description} />
+  <Container class="pb-section">
+    <CardGrid>
+      {
+        services.map((s) => (
+          <Card href={href(lang, `services/${entrySlug(s)}`)} title={s.data.title} text={s.data.summary} headingLevel="h2" />
+        ))
+      }
+    </CardGrid>
+  </Container>
+  <CtaSection lang={lang} title={t.home.finalTitle} text={t.home.finalText} />
+</BaseLayout>

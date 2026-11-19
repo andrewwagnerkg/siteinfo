@@ -1,0 +1,36 @@
+---
+import Container from './Container.astro';
+
+/** Page section with an optional h2 and a "see all" link. */
+interface Props {
+  title?: string | undefined;
+  id?: string | undefined;
+  moreHref?: string | undefined;
+  moreLabel?: string | undefined;
+  class?: string;
+}
+
+const { title, id, moreHref, moreLabel, class: className } = Astro.props;
+const headingId = id ? `${id}-title` : undefined;
+---
+
+<section id={id} aria-labelledby={title ? headingId : undefined} class:list={['py-section', className]}>
+  <Container class="reveal">
+    {
+      title && (
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 md:mb-12">
+          <h2 id={headingId} class="max-w-heading text-h2 font-bold">
+            {title}
+          </h2>
+          {moreHref && moreLabel && (
+            <a href={moreHref} class="link-quiet text-accent hover:text-accent-hover">
+              {moreLabel}
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
+        </div>
+      )
+    }
+    <slot />
+  </Container>
+</section>

@@ -1,0 +1,18 @@
+---
+import Container from './Container.astro';
+
+/** Top block of an inner page: h1 and an optional lead paragraph. */
+interface Props {
+  title: string;
+  lead?: string | undefined;
+}
+
+const { title, lead } = Astro.props;
+---
+
+<Container as="header" class="pt-10 pb-section md:pt-16">
+  <slot name="before" />
+  <h1 class="max-w-heading text-h1 font-bold">{title}</h1>
+  {lead && <p class="mt-5 max-w-measure text-lead text-muted">{lead}</p>}
+  <slot />
+</Container>

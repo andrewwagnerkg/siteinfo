@@ -1,0 +1,39 @@
+---
+import { LANGS, useTranslations, type Lang } from '../i18n';
+import { translatePath } from '../lib/paths';
+
+/** Links to the current page in the other languages. */
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+
+const { lang, class: className } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<nav aria-label={t.nav.language} class:list={['flex items-center gap-1', className]}>
+  {
+    LANGS.map((code) => {
+      const dict = useTranslations(code);
+      const isCurrent = code === lang;
+      return (
+        <a
+          href={translatePath(Astro.url.pathname, code)}
+          hreflang={code}
+          lang={code}
+          aria-current={isCurrent ? 'true' : undefined}
+          class:list={[
+            'inline-flex min-h-touch min-w-touch items-center justify-center rounded-control px-2 text-small transition-colors',
+            isCurrent
+              ? 'bg-surface font-semibold text-fg underline decoration-2 underline-offset-4'
+              : 'text-muted hover:bg-surface hover:text-fg',
+          ]}
+        >
+          <span aria-hidden="true">{dict.lang.short}</span>
+          <span class="sr-only">{isCurrent ? `${t.nav.currentLanguage}: ${dict.lang.name}` : dict.lang.name}</span>
+        </a>
+      );
+    })
+  }
+</nav>

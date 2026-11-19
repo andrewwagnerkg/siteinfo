@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Card from '../../../components/Card.astro';
+import CardGrid from '../../../components/CardGrid.astro';
+import Container from '../../../components/Container.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import { langFromParam, langStaticPaths, useTranslations } from '../../../i18n';
+import { entrySlug, getLocalized } from '../../../lib/content';
+import { href } from '../../../lib/paths';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = langFromParam(Astro.params.lang);
+const t = useTranslations(lang);
+const jobs = (await getLocalized('careers', lang))
+  .filter((job) => job.data.open)
+  .sort((a, b) => b.data.date_posted.getTime() - a.data.date_posted.getTime());
+---
+
+<BaseLayout lang={lang} title={t.careers.title} description={t.careers.description}>
+  <PageHeader title={t.careers.title} lead={t.careers.description} />
+  <Container class="pb-section">
+    {
+      jobs.length === 0 ? (
+        <p>{t.careers.empty}</p>
+      ) : (
+        <CardGrid>
+          {jobs.map((job) => (
+            <Card
+              href={href(lang, `careers/${entrySlug(job)}`)}
+              title={job.data.title}
+              eyebrow={[job.data.level, job.data.remote ? t.careers.remote : job.data.location].join(' · ')}
+              text={job.data.summary}
+              headingLevel="h2"
+            >
+              {job.data.stack.length > 0 && <p class="mt-3 font-mono text-small text-muted">{job.data.stack.join(', ')}</p>}
+            </Card>
+          ))}
+        </CardGrid>
+      )
+    }
+  </Container>
+</BaseLayout>

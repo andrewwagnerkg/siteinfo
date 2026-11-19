@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CardGrid from '../../../components/CardGrid.astro';
+import Container from '../../../components/Container.astro';
+import CtaSection from '../../../components/CtaSection.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import ProjectCard from '../../../components/ProjectCard.astro';
+import { langFromParam, langStaticPaths, useTranslations } from '../../../i18n';
+import { byOrder, entrySlug, getLocalized } from '../../../lib/content';
+
+export const getStaticPaths = langStaticPaths;
+
+const lang = langFromParam(Astro.params.lang);
+const t = useTranslations(lang);
+const projects = (await getLocalized('projects', lang)).sort(byOrder);
+const services = (await getLocalized('services', lang)).sort(byOrder);
+
+const industries = [...new Set(projects.map((p) => p.data.industry))].sort((a, b) => a.localeCompare(b, lang));
+const usedServices = new Set(projects.flatMap((p) => p.data.services));
+const serviceOptions = services
+  .map((s) => ({ value: entrySlug(s), label: s.data.title }))
+  .filter((s) => usedServices.has(s.value));
+---
+
+<BaseLayout lang={lang} title={t.portfolio.title} description={t.portfolio.description}>
+  <PageHeader title={t.portfolio.title} lead={t.portfolio.description} />
+  <Container class="pb-section">
+    {
+      projects.length === 0 ? (
+        <p>{t.portfolio.empty}</p>
+      ) : (
+        <>
+          {/* Filters are progressive enhancement: hidden until the script runs. */}
+          <form id="portfolio-filters" hidden aria-label={t.portfolio.filtersLabel} class="mb-8 grid gap-4 sm:grid-cols-2 lg:max-w-measure">
+            <label class="flex flex-col gap-1">
+              <span class="text-small font-medium">{t.portfolio.filterIndustry}</span>
+              <select name="industry" class="field">
+                <option value="">{t.portfolio.filterAll}</option>
+                {industries.map((i) => (
+                  <option value={i}>{i}</option>
+                ))}
+              </select>
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-small font-medium">{t.portfolio.filterService}</span>
+              <select name="service" class="field">
+                <option value="">{t.portfolio.filterAll}</option>
+                {serviceOptions.map((s) => (
+                  <option value={s.value}>{s.label}</option>
+                ))}
+              </select>
+            </label>
+          </form>
+          <CardGrid class="portfolio-list">
+            {projects.map((p) => (
+              <ProjectCard project={p} lang={lang} headingLevel="h2" />
+            ))}
+          </CardGrid>
+          <p id="portfolio-empty" hidden role="status" class="mt-6 text-muted">
+            {t.portfolio.noResults}
+          </p>
+        </>
+      )
+    }
+  </Container>
+  <CtaSection lang={lang} title={t.portfolio.ctaTitle} />
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('portfolio-filters') as HTMLFormElement | null;
+  const empty = document.getElementById('portfolio-empty');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.portfolio-list > [data-industry]'));
+
+  if (form && cards.length > 0) {
+    form.hidden = false;
+    const apply = () => {
+      const data = new FormData(form);
+      const industry = String(data.get('industry') ?? '');
+      const service = String(data.get('service') ?? '');
+      let visible = 0;
+      for (const card of cards) {
+        const services = (card.dataset.services ?? '').split(' ');
+        const show = (!industry || card.dataset.industry === industry) && (!service || services.includes(service));
+        card.hidden = !show;
+        if (show) visible += 1;
+      }
+      if (empty) empty.hidden = visible > 0;
+    };
+    form.addEventListener('change', apply);
+    form.addEventListener('submit', (event) => event.preventDefault());
+  }
+</script>

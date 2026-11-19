@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Card from './Card.astro';
+import { entrySlug } from '../lib/content';
+import { href } from '../lib/paths';
+import type { Lang } from '../i18n';
+
+/** Case card: industry + one line about the result + key metric. */
+interface Props {
+  project: CollectionEntry<'projects'>;
+  lang: Lang;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { project, lang, headingLevel } = Astro.props;
+const { data } = project;
+// Used by the portfolio filters.
+const attrs = {
+  'data-industry': data.industry,
+  'data-services': data.services.join(' '),
+};
+---
+
+<Card
+  href={href(lang, `portfolio/${entrySlug(project)}`)}
+  title={data.title}
+  eyebrow={`${data.industry} · ${data.company_size}`}
+  text={data.summary}
+  headingLevel={headingLevel}
+  attrs={attrs}
+>
+  <p slot="top" class="mb-4 border-b border-line pb-4">
+    <span class="block text-metric font-bold">{data.headline_metric.value}</span>
+    <span class="mt-1 block text-small text-muted">{data.headline_metric.label}</span>
+  </p>
+</Card>

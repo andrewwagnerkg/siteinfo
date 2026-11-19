@@ -1,0 +1,47 @@
+---
+import Container from './Container.astro';
+import Logo from './Logo.astro';
+import { useTranslations, type Lang } from '../i18n';
+import { getFooterNav } from '../lib/nav';
+import { href } from '../lib/paths';
+import { siteConfig } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const items = await getFooterNav(lang, t);
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-line bg-surface pt-12 pb-8 md:pt-16">
+  <Container class="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
+    <div class="min-w-0">
+      <a href={href(lang)} class="inline-flex min-h-touch items-center gap-2.5 text-h3 font-bold">
+        <Logo />
+        {siteConfig.name}
+      </a>
+      <p class="mt-2">
+        <a href={`mailto:${siteConfig.email}`} class="link-quiet">{siteConfig.email}</a>
+      </p>
+    </div>
+    <nav aria-label={t.nav.footerLabel}>
+      <ul role="list" class="grid grid-cols-1 gap-x-10 sm:grid-cols-2">
+        {
+          items.map((item) => (
+            <li>
+              <a href={href(lang, item.path)} class="link-quiet">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <p class="border-t border-line pt-6 text-small text-muted md:col-span-2">
+      &copy; {year} {siteConfig.name}. {t.common.allRightsReserved}
+    </p>
+  </Container>
+</footer>

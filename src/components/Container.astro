@@ -1,0 +1,13 @@
+---
+/** Centered page container: max width `page`, fluid side gutters. */
+interface Props {
+  as?: 'div' | 'section' | 'header' | 'footer' | 'article';
+  class?: string;
+}
+
+const { as: Tag = 'div', class: className } = Astro.props;
+---
+
+<Tag class:list={['mx-auto w-full max-w-page px-gutter', className]}>
+  <slot />
+</Tag>

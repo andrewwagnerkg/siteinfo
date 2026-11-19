@@ -1,0 +1,30 @@
+---
+import ButtonLink from './ButtonLink.astro';
+import Container from './Container.astro';
+import { useTranslations, type Lang } from '../i18n';
+import { href } from '../lib/paths';
+
+/** Final call to action with a link to the contacts page. */
+interface Props {
+  lang: Lang;
+  title: string;
+  text?: string | undefined;
+}
+
+const { lang, title, text } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section aria-labelledby="cta-title" class="py-section">
+  <Container class="reveal">
+    <div
+      class="flex flex-col gap-6 rounded-panel border border-line bg-surface p-6 sm:p-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:p-14"
+    >
+      <div class="min-w-0">
+        <h2 id="cta-title" class="max-w-heading text-h2 font-bold">{title}</h2>
+        {text && <p class="mt-3 max-w-measure text-lead text-muted">{text}</p>}
+      </div>
+      <ButtonLink href={href(lang, 'contacts')} class="self-start lg:shrink-0 lg:self-center">{t.common.discussProject}</ButtonLink>
+    </div>
+  </Container>
+</section>

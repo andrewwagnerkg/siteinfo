@@ -15,7 +15,7 @@ export interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   /** Legal / brand name. Also used as og:site_name and in JSON-LD. */
-  name: 'Company',
+  name: 'TimelySoft',
   email: 'hello@example.com',
   phone: '',
   /** Postal address for JSON-LD; leave fields empty if unknown. */
